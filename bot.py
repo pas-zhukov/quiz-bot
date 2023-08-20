@@ -4,6 +4,8 @@ from environs import Env
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
+from quiz_utils import get_random_question
+
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,11 @@ def start(update: Update, _: CallbackContext):
 
 
 def reply_to_msg(update: Update, _: CallbackContext):
-    update.message.reply_text(update.message.text)
+    if update.message.text == 'Новый вопрос':
+        question = get_random_question()
+        update.message.reply_text(question['question'])
+    else:
+        update.message.reply_text(update.message.text)
 
 
 if __name__ == '__main__':
