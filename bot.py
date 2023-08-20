@@ -1,7 +1,7 @@
 import logging
 
 from environs import Env
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
@@ -27,12 +27,13 @@ def main():
 
 
 def start(update: Update, _: CallbackContext):
-    """Send hello message when `/start` command is passed."""
-    update.message.reply_text("Здравствуйте!")
+    custom_keyboard = [['Новый вопрос', 'Сдаться'],
+                       ['Мой счёт']]
+    reply_markup = ReplyKeyboardMarkup(custom_keyboard)
+    update.message.reply_text("Здравствуйте!", reply_markup=reply_markup)
 
 
 def reply_to_msg(update: Update, _: CallbackContext):
-    """Reply to a user message."""
     update.message.reply_text(update.message.text)
 
 
