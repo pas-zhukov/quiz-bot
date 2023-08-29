@@ -1,7 +1,20 @@
+import os
 import random
 import logging
 
+from tqdm import tqdm
+
+from questions_db import QuestionsDatabase
+
 logger = logging.getLogger(__name__)
+
+
+def main():
+    # TODO: решить проблему с наличием одиночных кавычек в текстах (возможно и других кавычек...)
+    db = QuestionsDatabase()
+    q = read_folder('quiz-questions')
+    with db:
+        db.insert_questions(q)
 
 
 def read_questions_file(path: str) -> list[dict]:
@@ -23,7 +36,6 @@ def read_questions_file(path: str) -> list[dict]:
             questions.append(text_part)
         elif text_part.lower().strip().startswith('ответ'):
             answers.append(text_part)
-    logger.critical(str([len(questions), len(answers)]))
 
     questions_with_answers = []
     for index in range(len(questions)):
@@ -34,16 +46,21 @@ def read_questions_file(path: str) -> list[dict]:
     return questions_with_answers
 
 
-def read_folder(path: str) -> list[dict]:
-    pass
+def read_folder(path) -> list[dict]:
+    questions_with_answers = []
+    for _, _, files in os.walk(path):
+        for filename in tqdm(files):
+            questions_with_answers += read_questions_file(os.path.join(path, filename))
+    return questions_with_answers
 
 
 def get_random_question():
-    # TEMPORARY
+    # TODO: delete me
     questions = read_questions_file('1vs1200.txt')
     random_question = random.choice(questions)
     return random_question
 
 
 if __name__ == '__main__':
-    print(get_random_question())
+    main()
+
