@@ -13,6 +13,7 @@ class QuestionsDatabase:
     def __enter__(self):
         self.connection = sqlite3.connect(self.db_name)
         self.cursor = self.connection.cursor()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.connection.close()
@@ -34,12 +35,10 @@ class QuestionsDatabase:
         ''')
         self.connection.commit()
 
-    def insert_questions(self, questions: list[dict]):
-        insertion_values = [f"('''{question['question']}''', '''{question['answer']}''')\n\n" for question in questions]
-        with open('l0.txt', 'w+', encoding='utf-8') as file:
-            file.write(', '.join(insertion_values))
+    def insert_question(self, question: dict):
+        insertion_value = f"('{question['question']}', '{question['answer']}')"
         insertion = f'''
-        INSERT INTO 'Questions' ('question', 'answer')  VALUES {', '.join(insertion_values)}
+        INSERT INTO 'Questions' ('question', 'answer')  VALUES {insertion_value}
         '''
         self.cursor.execute(insertion)
         self.connection.commit()
@@ -50,12 +49,3 @@ class QuestionsDatabase:
         ''')
         question = self.cursor.fetchall()[0]
         return question
-
-
-if __name__ == '__main__':
-    from quiz_questions import get_random_question
-    q = [get_random_question() for x in range(5)]
-    db = QuestionsDatabase()
-    with db:
-
-        print(db.get_question(1))

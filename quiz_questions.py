@@ -1,6 +1,8 @@
+from argparse import ArgumentParser
 import os
 import random
 import logging
+import sqlite3
 
 from tqdm import tqdm
 
@@ -10,11 +12,18 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    # TODO: решить проблему с наличием одиночных кавычек в текстах (возможно и других кавычек...)
+    parser = ArgumentParser()
+    parser.add_argument('path', help='Path to folder with questions', type=str)
+    args = parser.parse_args()
+    questions_path = args.path
     db = QuestionsDatabase()
-    q = read_folder('quiz-questions')
+    questions = read_folder(questions_path)
     with db:
-        db.insert_questions(q)
+        for index, question in enumerate(tqdm(questions, desc='Uploading questions.')):
+            try:
+                db.insert_question(question)
+            except sqlite3.OperationalError:
+                tqdm.write(f'Unable to import question #{index} into database. Question will be skipped.')
 
 
 def read_questions_file(path: str) -> list[dict]:
@@ -52,13 +61,6 @@ def read_folder(path) -> list[dict]:
         for filename in tqdm(files):
             questions_with_answers += read_questions_file(os.path.join(path, filename))
     return questions_with_answers
-
-
-def get_random_question():
-    # TODO: delete me
-    questions = read_questions_file('1vs1200.txt')
-    random_question = random.choice(questions)
-    return random_question
 
 
 if __name__ == '__main__':
