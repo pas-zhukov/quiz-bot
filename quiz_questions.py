@@ -42,9 +42,9 @@ def read_questions_file(path: str) -> list[dict]:
     answers = []
     for text_part in text:
         if text_part.lower().strip().startswith('вопрос'):
-            questions.append(text_part)
+            questions.append(text_part[10:].replace('\n', ' '))
         elif text_part.lower().strip().startswith('ответ'):
-            answers.append(text_part)
+            answers.append(text_part[7:].replace('\n', ' '))
 
     questions_with_answers = []
     for index in range(len(questions)):
@@ -58,7 +58,7 @@ def read_questions_file(path: str) -> list[dict]:
 def read_folder(path) -> list[dict]:
     questions_with_answers = []
     for _, _, files in os.walk(path):
-        for filename in tqdm(files):
+        for filename in tqdm(files, desc='Parsing texts.'):
             questions_with_answers += read_questions_file(os.path.join(path, filename))
     return questions_with_answers
 

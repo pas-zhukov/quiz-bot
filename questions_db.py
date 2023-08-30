@@ -1,4 +1,5 @@
 import sqlite3
+import random
 
 
 class QuestionsDatabase:
@@ -48,4 +49,15 @@ class QuestionsDatabase:
         SELECT * FROM 'Questions' WHERE id={question_id}
         ''')
         question = self.cursor.fetchall()[0]
-        return question
+        return {
+            'id': question[0],
+            'question': question[1],
+            'answer': question[2]
+        }
+
+    def get_random_question(self):
+        self.cursor.execute(f'''
+        SELECT COUNT(*) FROM 'Questions'
+        ''')
+        rows_count = self.cursor.fetchall()[0][0]
+        return self.get_question(random.randint(1, rows_count))
