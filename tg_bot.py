@@ -59,9 +59,9 @@ def main():
 
 
 def start(update: Update, _: CallbackContext):
-    custom_keyboard = [['Новый вопрос', 'Сдаться'],
+    keyboard = [['Новый вопрос', 'Сдаться'],
                        ['Мой счёт']]
-    reply_markup = ReplyKeyboardMarkup(custom_keyboard)
+    reply_markup = ReplyKeyboardMarkup(keyboard)
     update.message.reply_text("Здравствуйте!", reply_markup=reply_markup)
     return State.START
 
