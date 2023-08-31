@@ -43,6 +43,9 @@ def main():
             ],
             State.ANSWERING: [
                 MessageHandler(
+                    Filters.regex('^Сдаться'), give_up
+                ),
+                MessageHandler(
                     Filters.text & ~Filters.command, handle_solution_attempt
                 ),
             ],
@@ -87,6 +90,17 @@ def handle_solution_attempt(update: Update, context: CallbackContext):
     else:
         update.message.reply_text('Неправильно… Попробуешь ещё раз?')
         return State.ANSWERING
+
+
+def give_up(update: Update, context: CallbackContext):
+    redis_db = context.bot_data['redis_db']
+    questions_db = context.bot_data['questions_db']
+    user = update.message.from_user.id
+    question_id = redis_db.get(user)
+    with questions_db:
+        ans = questions_db.get_question(question_id)['answer']
+    update.message.reply_text(f'Правильный ответ: {ans}')
+    return handle_new_question_request(update, context)
 
 
 if __name__ == '__main__':

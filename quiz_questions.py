@@ -42,7 +42,7 @@ def read_questions_file(path: str) -> list[dict]:
     answers = []
     for text_part in text:
         if text_part.lower().strip().startswith('вопрос'):
-            questions.append(text_part[10:].replace('\n', ' '))
+            questions.append(text_part[10:].strip())
         elif text_part.lower().strip().startswith('ответ'):
             answers.append(text_part[7:].replace('\n', ' '))
 
