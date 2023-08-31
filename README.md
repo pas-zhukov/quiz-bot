@@ -58,15 +58,17 @@ REDIS_DB_PASSWORD=<Пароль БД Redis>
 
 ## Запуск с помощью Docker
 
-Для запуска выполните следующие команды:
-
+Соберите докер-образ:
 ```shell
-docker compose build
+docker build -t quiz-bot .
 ```
 
+Запустите докер-контейнер:
 ```shell
-docker compose up
+docker run --env-file ./.env --restart=on-failure -d quiz-bot
 ```
+
+_P.S.`./.env` замените на <путь к Вашему `.env` файлу>, если он не находился в корне с приложением._
 
 В итоге запустятся оба бота!
 
