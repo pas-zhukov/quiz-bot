@@ -6,6 +6,8 @@
  - [Телеграм](https://t.me/history_quizlet_bot)
  - [ВКонтакте](https://vk.com/im?sel=-222307795)
 
+![Без имени](https://github.com/pas-zhukov/quiz-bot/assets/117192371/64f0b6da-32ed-4ed7-903b-69bde294b0cf)
+
 
 # Развертывание бота
 
